@@ -1,8 +1,9 @@
 <template>
   <div class="todo-item">
-    <input class="done-button"
+    <input :checked="done"
+           class="done-button"
            type="checkbox"
-           @click="done = !done">
+           @click="$emit('toggleDone')">
     <div :class="done && 'done'"
          class="task">{{ task }}
     </div>
@@ -17,14 +18,8 @@
   export default {
     name: 'ToDoItem',
     props: {
-      task: {
-        type: String
-      }
-    },
-    data() {
-      return {
-        done: false
-      }
+      task: { type: String, required: true },
+      done: { type: Boolean, default: false, required: true }
     }
   }
 </script>

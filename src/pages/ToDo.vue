@@ -14,8 +14,10 @@
       <transition-group name="fade">
         <to-do-item v-for="(todo) in todos"
                     :key="todo.id"
+                    :done="todo.done"
                     :task="todo.task"
                     @remove="removeToDo(todo.id)"
+                    @toggleDone="toggleTodo(todo)"
         />
       </transition-group>
 
@@ -27,32 +29,42 @@
   import ButtonC from '@/components/Button'
   import InputField from '@/components/InputField'
   import ToDoItem from '@/components/ToDoItem'
+  import idb from '@/idb'
 
   export default {
     name: 'ToDo',
     components: { ButtonC, ToDoItem, InputField },
     data() {
       return {
-        todos: [
-          { id: 'todo-1', task: 'Solve coding challenge' },
-          { id: 'todo-2', task: 'Get offer' }
-        ],
-        newToDo: null
+        todos: [],
+        newToDo: ''
       }
     },
-    methods: {
-      addNewTodo() {
+    async created() {
+      // await idb.saveTodo({ id: 1, task: 'Solve coding challenge' })
+      // await idb.saveTodo({ id: 2, task: 'Get offer' })
+      this.todos = await idb.getTodos()
 
+    },
+    methods: {
+      async addNewTodo() {
         if (this.newToDo) {
-          this.todos.unshift({
-            id: 'todo-' + Math.round(Math.random() * 1000000),
-            task: this.newToDo
+          await idb.saveTodo({
+            task: this.newToDo,
+            done: false
           })
+          this.todos = await idb.getTodos()
           this.newToDo = ''
         }
       },
-      removeToDo(index) {
-        this.todos.splice(index, 1)
+      async removeToDo(todo_id) {
+        await idb.deleteTodo(todo_id)
+        this.todos = await idb.getTodos()
+      },
+      async toggleTodo(todo) {
+        todo.done = !todo.done
+        await idb.saveTodo(todo)
+        this.todos = await idb.getTodos()
       }
     }
   }
