@@ -6,16 +6,16 @@
                      placeholder="Add new todo"
                      @keyup.enter.native="addNewTodo"
         />
-        <button-c style="margin-left: 20px"
+        <button-c style="margin-left: 10px"
                   @click="addNewTodo">Add
         </button-c>
       </div>
 
       <transition-group name="fade">
-        <to-do-item v-for="(todo, index) in todos"
-                    :key="todo"
-                    :task="todo"
-                    @remove="removeToDo(index)"
+        <to-do-item v-for="(todo) in todos"
+                    :key="todo.id"
+                    :task="todo.task"
+                    @remove="removeToDo(todo.id)"
         />
       </transition-group>
 
@@ -34,16 +34,20 @@
     data() {
       return {
         todos: [
-          'Solve coding challenge',
-          'Get offer'
+          { id: 'todo-1', task: 'Solve coding challenge' },
+          { id: 'todo-2', task: 'Get offer' }
         ],
-        newToDo: ''
+        newToDo: null
       }
     },
     methods: {
       addNewTodo() {
+
         if (this.newToDo) {
-          this.todos.unshift(this.newToDo)
+          this.todos.unshift({
+            id: 'todo-' + Math.round(Math.random() * 1000000),
+            task: this.newToDo
+          })
           this.newToDo = ''
         }
       },
