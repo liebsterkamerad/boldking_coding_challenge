@@ -5,7 +5,9 @@
            type="checkbox"
            @click="$emit('toggleDone')">
     <div :class="done && 'done'"
-         class="task">{{ task }}
+         class="task"
+         @click="$emit('toggleDone')"
+    >{{ task }}
     </div>
     <button class="remove-button"
             @click="$emit('remove')">x
@@ -57,6 +59,10 @@
 
 .todo-item:hover > .remove-button {
   display: block;
+}
+
+.task {
+  cursor: pointer;
 }
 
 </style>
